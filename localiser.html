@@ -4,13 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>geolocalisation</title>
-    <link rel="stylesheet" href="localiser.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="shortcut icon" type="image/jpg" href="">
+    <style>
+        #map {
+            height: 500px; /* Taille de la carte */
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
-    
+    <h2>Ma Position GPS</h2>
+    <div id="map"></div>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Initialisation de la carte
+        var map = L.map('map').setView([48.8566, 2.3522], 13); // Paris par défaut
 
-<script src="localiser.js"></script>
+        // Ajouter une couche de carte OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Fonction pour obtenir la position GPS de l'utilisateur
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var lat = position.coords.latitude;
+                    var lon = position.coords.longitude;
+
+                    map.setView([lat, lon], 15); // Zoom sur la position
+                    L.marker([lat, lon]).addTo(map)
+                        .bindPopup("Vous êtes ici 📍")
+                        .openPopup();
+                }, function(error) {
+                    alert("Erreur de géolocalisation : " + error.message);
+                });
+            } else {
+                alert("La géolocalisation n'est pas supportée par votre navigateur.");
+            }
+        }
+
+        // Lancer la géolocalisation au chargement de la page
+        getLocation();
+    </script>
 </body>
 </html>
